@@ -1,14 +1,25 @@
 {% extends "base.html" %}
 
 {% block main %}
-  {% for task in tasks %}
+  {% if tasks %}
+    {% for task in tasks %}
     <div class="card">
       <div class="card-body">
         <h3>{{ task.title }}</h3>
-        <p>Added on {{ task.date }}</p>
+        <p class="text-muted">
+          Created: {{ task.created_at.strftime('%Y-%m-%d %H:%M') }}
+          {% if task.updated_at != task.created_at %}
+            | Updated: {{ task.updated_at.strftime('%Y-%m-%d %H:%M') }}
+          {% endif %}
+        </p>
         <a href="{{ url_for('edit', task_id=task.id) }}" class="btn btn-primary">Edit</a>
         <a href="{{ url_for('delete', task_id=task.id) }}" class="btn btn-danger">Delete</a>
       </div>
     </div>
-  {% endfor %}
+    {% endfor %}
+  {% else %}
+    <div class="alert alert-info">
+      No tasks yet. <a href="{{ url_for('add') }}">Add your first task!</a>
+    </div>
+  {% endif %}
 {% endblock %}
