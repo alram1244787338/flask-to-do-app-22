@@ -8,6 +8,9 @@
       <h3>Add Task</h3>
       <div class="col">
         {{ form.title(class="form-control") }}
+        {% for error in form.title.errors %}
+          <div class="text-danger">{{ error }}</div>
+        {% endfor %}
       </div>
       <div class="col">
         {{ form.submit(class="btn btn-primary") }}
