@@ -40,23 +40,20 @@ source venv/bin/activate  # On Windows use: venv\Scripts\activate
 
 3. Install dependencies
 ```bash
-pip install flask flask-sqlalchemy flask-wtf
+pip install -r requirements.txt
 ```
 
-4. Initialize the database
-```python
-python
->>> from app import db
->>> db.create_all()
->>> exit()
-```
-
-5. Run the application
+4. Run the application
 ```bash
 python app.py
 ```
 
-The application will be available at `http://localhost:5000`
+The database schema is created automatically on first run, so there is no manual setup step. The application will be available at `http://localhost:5000`
+
+### Running tests
+```bash
+pytest
+```
 
 ## 📱 Usage
 

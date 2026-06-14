@@ -8,6 +8,9 @@
       <h3>Edit Task</h3>
       <div class="col">
         {{ form.title(class="form-control") }}
+        {% for error in form.title.errors %}
+          <span class="text-danger">{{ error }}</span>
+        {% endfor %}
       </div>
       <div class="col">
         {{ form.submit(class="btn btn-primary") }}

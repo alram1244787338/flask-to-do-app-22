@@ -5,10 +5,13 @@ from datetime import datetime
 import models
 import forms
 
+
 @app.route('/')
 @app.route('/index')
 def index():
-    tasks = models.Task.query.all()
+    tasks = models.Task.query.order_by(
+        models.Task.updated_at.desc(), models.Task.id.desc()
+    ).all()
     return render_template('index.html', tasks=tasks)
 
 
@@ -16,43 +19,46 @@ def index():
 def add():
     form = forms.AddTaskForm()
     if form.validate_on_submit():
-        task = models.Task(title=form.title.data, date=datetime.utcnow())
+        task = models.Task(title=form.title.data)
         db.session.add(task)
         db.session.commit()
-        flash('Task added')
+        flash('Task created', 'success')
         return redirect(url_for('index'))
+    if request.method == 'POST':
+        flash('Task was not saved. Please fix the errors below.', 'warning')
     return render_template('add.html', form=form)
 
 
 @app.route('/edit/<int:task_id>', methods=['GET', 'POST'])
 def edit(task_id):
     form = forms.AddTaskForm()
-    task = models.Task.query.get(task_id)
-    print(task)
+    task = db.session.get(models.Task, task_id)
     if task:
         if form.validate_on_submit():
             task.title = form.title.data
-            task.date = datetime.utcnow()
+            task.updated_at = datetime.utcnow()
             db.session.commit()
-            flash('Task updated')
+            flash('Task updated', 'success')
             return redirect(url_for('index'))
+        if request.method == 'POST':
+            flash('Task was not saved. Please fix the errors below.', 'warning')
         form.title.data = task.title
         return render_template('edit.html', form=form, task_id=task_id)
-    flash(f'Task with id {task_id} does not exit')
+    flash(f'Task with id {task_id} does not exist', 'danger')
     return redirect(url_for('index'))
 
 
 @app.route('/delete/<int:task_id>', methods=['GET', 'POST'])
 def delete(task_id):
     form = forms.DeleteTaskForm()
-    task = models.Task.query.get(task_id)
+    task = db.session.get(models.Task, task_id)
     if task:
         if form.validate_on_submit():
             if form.submit.data:
                 db.session.delete(task)
                 db.session.commit()
-                flash('Task deleted')
+                flash('Task deleted', 'success')
             return redirect(url_for('index'))
         return render_template('delete.html', form=form, task_id=task_id, title=task.title)
-    flash(f'Task with id {task_id} does not exit')
+    flash(f'Task with id {task_id} does not exist', 'danger')
     return redirect(url_for('index'))
