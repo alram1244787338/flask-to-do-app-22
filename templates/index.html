@@ -5,9 +5,16 @@
     <div class="card">
       <div class="card-body">
         <h3>{{ task.title }}</h3>
-        <p>Added on {{ task.date }}</p>
+        <p class="text-muted mb-1">
+          <small>Created: {{ task.created_at.strftime('%b %d, %Y %H:%M') }}</small>
+        </p>
+        {% if task.updated_at %}
+        <p class="text-muted mb-2">
+          <small>Last updated: {{ task.updated_at.strftime('%b %d, %Y %H:%M') }}</small>
+        </p>
+        {% endif %}
         <a href="{{ url_for('edit', task_id=task.id) }}" class="btn btn-primary">Edit</a>
-        <a href="{{ url_for('delete', task_id=task.id) }}" class="btn btn-danger">Delete</a>
+        <a href="{{ url_for('delete', task_id=task.id) }}" class="btn btn-outline-danger">Delete</a>
       </div>
     </div>
   {% endfor %}
